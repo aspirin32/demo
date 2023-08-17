@@ -8,9 +8,9 @@ terraform {
   }
   backend "s3" {
     endpoint   = "storage.yandexcloud.net"
-    bucket     = "tfstate-diplom"
+    bucket     = "tfstate"
     region     = "ru-central1-a"
-    key        = "diplom/diplom-state.tfstate"
+    key        = "state.tfstate"
     access_key = "-"
     secret_key = "-"
 
