@@ -11,17 +11,17 @@ terraform {
     bucket     = "tfstate-diplom"
     region     = "ru-central1-a"
     key        = "diplom/diplom-state.tfstate"
-    access_key = "YCAJEX_YaiooeBDMDUJ0oczBJ"
-    secret_key = "YCPUUl8nnSxoFF80anhlZwfe8T1SnzC1ZEauMQys"
+    access_key = "-"
+    secret_key = "-"
 
     skip_region_validation      = true
     skip_credentials_validation = true
   }
 }
 provider "yandex" {
-  token     = "y0_AgAAAAADrsOUAATuwQAAAADczEhqP8pEVx0lSC2xbJ6pG1AuFOTNODE"
-  cloud_id  = "b1g77ra04er986sl1k1f"
-  folder_id = "b1gcfconkmvhs7gilqm8"
+  token     = "-"
+  cloud_id  = "-"
+  folder_id = "-"
 }
 resource "yandex_vpc_network" "network" {
   name = "network"
