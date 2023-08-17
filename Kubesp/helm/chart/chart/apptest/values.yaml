@@ -1,0 +1,21 @@
+app:
+  environment:
+    DB_HOST: db
+    DB_NAME: tutorial-dev
+    DB_USER: vinhle
+    DB_PASS: password
+  repository:
+    image: registry.gitlab.com/aspirin1991/diplom
+    tag: latest
+db:
+  environment:
+    POSTGRES_DB: tutorial-dev
+    POSTGRES_USER: vinhle
+    POSTGRES_PASSWORD: password
+  persistence:
+    tutorialvolume:
+      capacity: 1Gi
+      enabled: true
+  repository:
+    image: postgres
+    tag: 13-alpine

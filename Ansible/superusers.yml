@@ -1,0 +1,24 @@
+---
+- hosts: test # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  tasks:
+  - name: add group superuser
+    group:
+      name: superuser # required. Name of the group to manage.
+      state: present # not required. choices: absent;present.
+  - name: create user2
+    user:
+      name: user2 # required. Name of the user to create, remove or modify.
+      group: superuser # not required. Optionally sets the user's primary group (takes a group name).
+  - name: create user3
+    user:
+      name: user3 # required. Name of the user to create, remove or modify.
+      group: superuser # not required. Optionally sets the user's primary group (takes a group name).
+  - name: add group and validate the sudoers file before saving
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      insertafter: '^# Members of the admin group may gain root privileges$'
+      line: '%superuser ALL=(ALL) ALL'
+      validate: /usr/sbin/visudo -cf %s

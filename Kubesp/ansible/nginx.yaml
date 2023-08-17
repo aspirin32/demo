@@ -1,0 +1,11 @@
+---
+- hosts: all # group of hosts
+  gather_facts: yes # we need to gather facts
+  remote_user: ubuntu
+  tasks: 
+  - name: nginx install # nginx installation
+    become: yes
+    apt:
+      name: nginx-full
+      state: present
+      update_cache: yes

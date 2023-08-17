@@ -1,0 +1,8 @@
+---
+variables:
+  GIT_STRATEGY: clone
+httpd:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ([ -f /var/www/html/index.html ]) || (echo 'Position number 1' >/var/www/html/index.html) && (echo "Position number `awk {'print $NF'+1} /var/www/html/index.html `" > /var/www/html/index.html)

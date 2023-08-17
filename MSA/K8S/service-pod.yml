@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deploy
+  labels:
+    app: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp-pod
+  replicas: 2 # запускает 2 пода, созданных по шаблону
+  template:
+    metadata:
+      labels:
+        app: myapp-pod
+    spec:
+      containers:
+      - name: myapp-container
+        image: busybox
+        ports:
+          - containerPort: 80
+        command: ['sh', '-c', 'echo Hello Kubernetes from Deployment! && sleep 3600']
+--- # три дефиса позволяют нам добавить несколько манифестов в один файл. В данном случае это было сделано для наглядности. Все, что находится выше этого разделителя, осталось без изменений с прошлого примера.
+kind: Service
+apiVersion: v1
+metadata:
+  name: myapp-service
+spec:
+  selector:
+    app: myapp-pod
+  ports:
+  - protocol: TCP
+    port: 80 #порт, на котором будет принимать соединения сервис.
+    targetPort: 80 #на какой порт в Pod’е перенаправлять трафик.

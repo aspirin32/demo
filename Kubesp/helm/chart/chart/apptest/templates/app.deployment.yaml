@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: '{{ .Release.Name }}-app'
+  labels:
+    katenary.io/component: app
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 495b7d6d7be2e96df4b3ae0833de4f381dea6226
+    katenary.io/version: 2.0.0-beta2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      katenary.io/component: app
+      katenary.io/release: '{{ .Release.Name }}'
+  template:
+    metadata:
+      labels:
+        katenary.io/component: app
+        katenary.io/release: '{{ .Release.Name }}'
+    spec:
+      initContainers:
+        - name: check-db
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |-
+              OK=0
+              echo "Checking db port"
+              while [ $OK != 1 ]; do
+                  echo -n "."
+                  nc -z {{ .Release.Name }}-db 5432 2>&1 >/dev/null && OK=1 || sleep 1
+              done
+              echo
+              echo "Done"
+      containers:
+        - name: app
+          image: '{{ .Values.app.repository.image }}{{ if ne .Values.app.repository.tag "" }}:{{ .Values.app.repository.tag }}{{ end }}'
+          ports:
+            - name: app
+              containerPort: 3003
+          env:
+            - name: DB_PASS
+              value: '{{ tpl .Values.app.environment.DB_PASS . }}'
+            - name: DB_HOST
+              value: '{{ tpl .Values.app.environment.DB_HOST . }}'
+            - name: DB_NAME
+              value: '{{ tpl .Values.app.environment.DB_NAME . }}'
+            - name: DB_USER
+              value: '{{ tpl .Values.app.environment.DB_USER . }}'
+          command:
+            - sh
+            - -c
+            - python manage.py migrate && python manage.py runserver 0.0.0.0:3003
+

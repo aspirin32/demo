@@ -1,0 +1,15 @@
+---
+- hosts: test # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks: 
+  - name: nginx install # nginx installation
+    become: yes
+    apt:
+      name: nginx-full
+      state: present
+      update_cache: yes
+  - name: config index.html
+    become: yes
+    template:
+      src: /home/allexxx1991/My_Project/SF_Project/Ansible/Templates/nginx.j2
+      dest: /var/www/html/index.html

@@ -1,0 +1,2 @@
+sudo docker run  -it --network host  -p 8080:80 -v /srv/app/:/srv/app/ -v /srv/app/conf/:/srv/app/conf/ <id image>
+psql -U sfadmin -W -h 127.0.0.1 -p 5432 -d sf

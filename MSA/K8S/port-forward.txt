@@ -1,0 +1,1 @@
+kubectl -n monitoring port-forward --address 0.0.0.0 prometheus-stack-grafana-7d789fb684-p5cz8 3000:3000

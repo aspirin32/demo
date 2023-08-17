@@ -1,0 +1,23 @@
+environments:
+  devel:
+  production:
+
+releases:
+  - name: nginx
+    labels:
+      app: nginx
+    wait: true
+    chart: stable/nginx
+    version: 8.4.0
+    values:
+      - envs/{{ .Environment.Name }}/values/nginx.yaml
+  - name: frontend
+    labels:
+      app: frontend
+    wait: true
+    chart: private-helm-repo/frontend
+    version: 1.0.5
+    needs:
+      - postgres
+    values:
+      - envs/{{ .Environment.Name }}/values/frontend.yaml

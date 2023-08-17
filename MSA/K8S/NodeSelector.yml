@@ -1,0 +1,30 @@
+spec:
+  selector:
+    matchLabels:
+      app: cache
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: cache
+    spec:
+      affinity:
+        nodeAffinity: #This rule ensures that during scheduling time the application must be placed *if possible* on nodes NOT performance=high
+          preferredDuringSchedulingIgnoredDuringExecution: #более мягкое правило. Сначала попробует разместить под на хосте с нужным набором меток, потом — на остальных свободных.
+            - weight: 10 #используется в preferred-сценариях, добавляет вес правила. В случае нескольких правил приоритет будет отдан правилу с наибольшим весом.
+              preference:
+                matchExpressions:
+                  - key: performance
+                    operator: NotIn #NotIn говорит об обратном (values не должны присутствовать в метках).
+                    values:
+                      - high
+        podAntiAffinity: #This rule ensures that the application cannot run in the same zone (app=cache).
+          requiredDuringSchedulingIgnoredDuringExecution: #чёткое соответствие правилам. Если matchExpressions не совпадает, под будет в состоянии pending, пока в кластере не появится хост с нужными метками.
+         #requiredDuringSchedulingRequiredDuringExecution — вторая часть правила означает, что делать с текущими подами, которые не соответствуют выражению matchExpression. Required — принудительно эвакуирует не соответствующие поды, Ignored — игнорирует уже запущенные поды.
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In #In говорит о том, что values должен совпадать с value метки cache.
+                    values:
+                      - cache
+              topologyKey: topology.kubernetes.io/zone

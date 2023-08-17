@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}"
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations: #Как можно заметить, hook описан в секции annotations — без этих строчек Helm будет считать их частью основного релиза. 
+  #Также через hook-weight можно указывать вес (приоритет этого ресурса), чтобы можно было выстраивать их по порядку.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+spec:
+  template:
+...
+pre-install — выполнить после генерации манифестов, но перед применением в Kubernetes;
+post-install — выполнить после применения всех ресурсов в Kubernetes;
+pre-delete — выполнить перед удалением каких-либо ресурсов;
+post-delete — выполнить после удаления всех ресурсов;
+pre-upgrade — как и с pre-install, но в моменте upgrade (обновления) релиза;
+post-upgrade — как и с post-install, но в моменте upgrade (обновления) релиза;
+pre-rollback — перед откатом на предыдущую версию;
+post-rollback — после отката на предыдущую версию.

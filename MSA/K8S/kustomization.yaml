@@ -1,0 +1,7 @@
+resources: #перечисляем все файлы, на которые хотим воздействовать;
+- deployment.yaml
+- service.yaml
+namePrefix: dev- #добавочный префикс, который Kustomize будет автоматически добавлять ко всем именам;
+namespace: development #Kustomize будет добавлять соответствующий namespace во всех ресурсах;
+commonLabels: #лейблы, которые будут добавляться к манифестам.
+  environment: development

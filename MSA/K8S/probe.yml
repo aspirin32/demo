@@ -1,0 +1,25 @@
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http-port
+  failureThreshold: 1
+  periodSeconds: 10
+
+---
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http-port
+  failureThreshold: 1
+  periodSeconds: 10
+  #Чтобы запускать LivenessProbe чуть позже (иногда приложению требуется время для старта), был добавлен параметр InitialsDelaySeconds.
+
+---
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http-port
+  failureThreshold: 30
+  periodSeconds: 10

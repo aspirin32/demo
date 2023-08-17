@@ -1,0 +1,59 @@
+---
+- hosts: app # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  tasks: 
+    - name: install docker
+      block:
+      - name: install docker on UBUNTU
+        apt:
+          name: docker.io
+          state: latest
+          update_cache: yes
+      when: ansible_facts['distribution'] == "Ubuntu"
+    - name: install docker on CentOS
+      block:
+      - name: install docker on CentOS
+        yum:
+          name: docker
+          state: latest
+          update_cache: yes
+      when: ansible_facts['distribution'] == "CentOS"
+- hosts: database # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  tasks:
+    - name: add repo key 
+      apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc # not required. The URL to retrieve key from.
+        state: present # not required. choices: absent;present. Ensures that the key is present (added) or absent (revoked).
+    - name: add repo by shell 
+      shell: sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+    - name: install postgresql 
+      apt:
+        name: "postgresql-{{ psql_version }}"
+        state: present
+        update_cache: yes
+    - name: create data dir 
+      file:
+        path: "{{ data_dir }}" 
+        state: directory
+        mode: '777'
+    - name: stop psql service 
+      service:
+        name: postgresql # required. Name of the service.
+        state: stopped
+    - name: edit postgresql.conf to new datadir 
+      lineinfile:
+        path: "/etc/postgresql/{{ psql_version }}/main/postgresql.conf" # required. The file to modify. Before Ansible 2.3 this option was only usable as I(dest), I(destfile) and I(name).
+        regexp: '^data_directory = ' # not required. The regular expression to look for in every line of the file. For C(state=present), the pattern to replace if found. Only the last line found will be replaced. For C(state=absent), the pattern of the line(s) to remove. If the regular expression is not matched, the line will be added to the file in keeping with C(insertbefore) or C(insertafter) settings. When modifying a line the regexp should typically match both the initial state of the line as well as its state after replacement by C(line) to ensure idempotence. Uses Python regular expressions. See U(http://docs.python.org/2/library/re.html).
+        state: present # not required. choices: absent;present. Whether the line should be there or not.
+        line: "data_directory = '{{ data_dir }}'" # not required. The line to insert/replace into the file. Required for C(state=present). If C(backrefs) is set, may contain backreferences that will get expanded with the C(regexp) capture groups if the regexp matches.
+    - name: start psql service 
+      service:
+        name: postgresql # required. Name of the service.
+        state: started
+    - name: status of service 
+      shell: service postgresql status
+      register: output
+    - debug: var=output.stdout # to see service status

@@ -1,0 +1,14 @@
+---
+# handlers file for php_nginx
+- name: start nginx
+  service:
+    name: nginx # required. Name of the service.
+    state: started
+- name: restart php-fpm
+  service:
+    name: php8.1-fpm # required. Name of the service.
+    state: restarted
+- name: restart nginx
+  service:
+    name: nginx # required. Name of the service.
+    state: restarted

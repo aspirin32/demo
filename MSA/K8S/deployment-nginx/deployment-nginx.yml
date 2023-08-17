@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-sf
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21.1-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config
+          mountPath: "/etc/nginx"
+          readOnly: true
+        env: #в этой секции объявляем все , что мы хотим, чтобы было в env в контейнере:
+        - name: NGINX_USERNAME #имя переменной в окружении;
+          valueFrom: #откуда берем данные
+            secretKeyRef: #указываем тип источника данных;
+              name: sf-auth-nginx #имя секрета;
+              key: username #ключ объекта в секрете, который хотим использовать.
+        - name: NGINX_PASSWORD #имя переменной в окружении;
+          valueFrom: #откуда берем данные
+            secretKeyRef: #указываем тип источника данных;
+              name: sf-auth-nginx #имя секрета;
+              key: password #ключ объекта в секрете, который хотим использовать.
+      volumes:
+      - name: config
+        configMap:
+          name: nginx-config
+          items:
+          - key: nginx.conf
+            path: nginx.conf

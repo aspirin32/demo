@@ -1,0 +1,29 @@
+---
+# tasks file for dns
+- name: dnsmasq install # dnsmasq installation
+  apt:
+    name: dnsmasq
+    state: latest
+    update_cache: yes
+- name: stop systemd-resolved
+  service:
+    name: systemd-resolved # required. Name of the service.
+    state: stopped
+- name: edit dhclient.conf
+  replace:
+    path:  /etc/dhcp/dhclient.conf # required. The file to modify. Before Ansible 2.3 this option was only usable as I(dest), I(destfile) and I(name).
+    regexp: '^#prepend domain-name-servers 127.0.0.1;$' # required. The regular expression to look for in the contents of the file. Uses Python regular expressions; see U(http://docs.python.org/2/library/re.html). Uses MULTILINE mode, which means C(^) and C($) match the beginning and end of the file, as well as the beginning and end respectively of I(each line) of the file. Does not use DOTALL, which means the C(.) special character matches any character I(except newlines). A common mistake is to assume that a negated character set like C([^#]) will also not match newlines. In order to exclude newlines, they must be added to the set like C([^#\n]). Note that, as of Ansible 2.0, short form tasks should have any escape sequences backslash-escaped in order to prevent them being parsed as string literal escapes. See the examples.
+    replace: 'prepend domain-name-servers 127.0.0.1;' # not required. The string to replace regexp matches. May contain backreferences that will get expanded with the regexp capture groups if the regexp matches. If not set, matches are removed entirely. Backreferences can be used ambiguously like C(\1), or explicitly like C(\g<1>).
+- name: copy config dnsmasq
+  copy:
+    src: ~/My_Project/SF_Project/Ansible/roles/dns/files/dnsmasq.conf
+    dest: /etc/dnsmasq.conf
+    force: yes
+- name: restart dnsmasq
+  service:
+    name: dnsmasq # required. Name of the service.
+    state: restarted 
+- name: status of service dnsmasq
+  shell: service dnsmasq status
+  register: output
+- debug: var=output.stdout # to see service status

@@ -1,0 +1,20 @@
+---
+stages:
+  - httpd
+  - MySQL
+variables:
+  GIT_STRATEGY: clone
+httpd:
+  stage: httpd
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ([ -f /var/www/html/index.html ]) || (echo 'Position number 1' >/var/www/html/index.html) && (echo "Position number `awk {'print $NF'+1} /var/www/html/index.html `" > /var/www/html/index.html)
+
+MySQL:
+  stage: MySQL
+  rules:
+    - changes:
+        - script.sql
+  script:
+    - mysql --user rfamro --host mysql-rfam-public.ebi.ac.uk --port 4497 --database Rfam < script.sql

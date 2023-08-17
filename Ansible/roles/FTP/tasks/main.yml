@@ -1,0 +1,17 @@
+---
+# tasks file for FTP
+- name: vsftpd install # vsftpd installation
+  apt:
+    name: vsftpd
+    state: latest
+    update_cache: yes
+  notify: start vsftpd
+- name: del vsftpd.conf
+  file:
+    path: /etc/vsftpd.conf
+    state: absent
+- name: add new config
+  copy:
+    src: ~/My_Project/SF_Project/Ansible/roles/FTP/files/vsftpd.conf
+    dest: /etc/vsftpd.conf
+  notify: restart vsftpd

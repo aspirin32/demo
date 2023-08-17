@@ -1,0 +1,10 @@
+---
+# handlers file for php
+- name: start php-fpm
+  service:
+    name: php8.1-fpm # required. Name of the service.
+    state: started
+- name: restart php-fpm
+  service:
+    name: php8.1-fpm # required. Name of the service.
+    state: restarted

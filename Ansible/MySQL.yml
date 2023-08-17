@@ -1,0 +1,13 @@
+---
+- hosts: local # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks: 
+  - name: MySQL server install # mysql installation
+    become: yes
+    apt:
+      name: mysql-server
+      state: present
+  - name: status of service 
+    shell: service mysql status
+    register: output
+  - debug: var=output.stdout # to see service status

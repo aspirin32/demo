@@ -1,0 +1,15 @@
+[k8s-master]
+158.160.117.66
+
+[k8s-worker]
+158.160.99.238
+
+[srv]
+158.160.101.155
+
+[k8s:children]
+k8s-master
+k8s-worker
+
+[ansible]
+158.160.113.45

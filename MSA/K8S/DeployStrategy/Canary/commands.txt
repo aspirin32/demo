@@ -1,0 +1,12 @@
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.0/deploy/static/provider/cloud/deploy.yaml
+
+kubectl create ns first
+kubectl create ns second
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/docs/examples/http-svc.yaml -n first
+
+kubectl apply -f http-svc.ingress.yaml -n first
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/docs/examples/http-svc.yaml -n second
+
+kubectl apply -f http-svc.ingress-canary.yaml -n second

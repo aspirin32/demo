@@ -1,0 +1,22 @@
+{
+  "name": "npm_random_phrase",
+  "version": "1.0.0",
+  "description": "random phrases of developers",
+  "main": "random.js",
+  "scripts": {
+    "test": "node random.js && exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspirin32/SF_Project.git"
+  },
+  "author": "A.Spirin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aspirin32/SF_Project/issues"
+  },
+  "homepage": "https://github.com/aspirin32/SF_Project#readme",
+  "dependencies": {
+    "jquery": "^3.6.4"
+  }
+}

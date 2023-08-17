@@ -1,0 +1,9 @@
+1. Подготовка инфраструктуры, установка докер
+2. подготовка управляющей ноды docker swarm init --advertise-addr <MANAGER-IP>
+3. добавление воркеров (узнаем токен docker swarm join-token worker) и docker swarm join --token
+4. проверяем docker node ls
+5. запуск проекта docker stack deploy --compose-file docker-compose.yml socks1
+6. проверка именно моего сервиса sudo docker stack services socks1
+7. смотрел логи если не запускались контейнеры docker service logs
+8. увеличил реплики фронтенда docker service scale socks1_front-end=2
+9. docker stack rm socks1

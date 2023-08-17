@@ -1,0 +1,8 @@
+# Create on 2023-08-03T08:53:58Z
+# Katenary command line: katenary convert docker-compose.yaml app-test
+apiVersion: v2
+appVersion: 0.0.1
+description: A helm chart for chart
+name: chart
+type: application
+version: 0.1.0

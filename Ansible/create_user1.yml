@@ -1,0 +1,18 @@
+---
+- hosts: test # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks: 
+
+  - name: create user1
+    become: yes
+    ansible.builtin.user:
+      name: user1
+  
+  - name: vault ssh.pub
+    local_action: shell ansible-vault encrypt --vault-pass-file  /home/allexxx1991/My_Project/SF_Project/Ansible/Files/vault-pass /home/allexxx1991/My_Project/SF_Project/Ansible/Files/ssh.pub
+
+  - name: copy ssh.pub
+    become: yes
+    copy:
+      src: /home/allexxx1991/My_Project/SF_Project/Ansible/Files/ssh.pub
+      dest: /home/user1/.ssh/ssh.pub

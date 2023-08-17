@@ -1,0 +1,29 @@
+---
+- hosts: test # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks:
+
+  - name: postfix server install # postfix installation
+    become: yes
+    apt:
+      name: postfix
+      state: present
+      update_cache: yes
+    tags: init postfix
+
+  - name: postfix server uninstall # postfix installation
+    become: yes
+    apt:
+      name: postfix
+      state: absent
+    tags: drop postfix
+
+  - name: status of service 
+    shell: service postfix status
+    register: output
+    tags:
+    - always
+
+  - debug: var=output.stdout # to see service status
+    tags:
+    - always

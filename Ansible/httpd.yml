@@ -1,0 +1,41 @@
+---
+- hosts: test # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks:
+  - name: install_httpd # httpd installation
+    become: yes
+    apt:
+      name: apache2
+      state: present
+      update_cache: yes
+  - name: rm directory
+    become: yes
+    file:
+      path: /etc/httpd/conf.d
+      state: absent
+  - name: create dir conf.d
+    become: yes
+    file:
+      path: /etc/httpd/conf.d
+      state: directory
+  - name: add new vm config
+    become: yes
+    copy:
+      src: ~/My_Project/SF_Project/Ansible/Files/vhost.conf
+      dest: /etc/httpd/conf.d/host1.conf
+    notify: restart_httpd
+  - name: create htpasswd
+    become: yes
+    command: 'htpasswd -b -c /etc/httpd/.htpasswd user1 qwerty'
+  - name: create content
+    become: yes
+    copy:
+      src: /home/allexxx1991/My_Project/SF_Project/Ansible/Files/content.html
+      dest: /var/www/html/index.html
+  handlers:
+  - name: restart_httpd
+    become: yes
+    listen: restart_httpd
+    service:
+      name: apache2
+      state: restarted

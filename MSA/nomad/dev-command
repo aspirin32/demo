@@ -1,0 +1,9 @@
+sudo nomad agent -dev -bind 0.0.0.0 -log-level INFO
+
+nomad job init -short
+
+nomad job run example.nomad
+
+nomad job status
+
+nomad job stop

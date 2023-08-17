@@ -1,0 +1,24 @@
+---
+- hosts: test1 # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  roles:
+   - users
+   - http
+
+- hosts: test2 # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  roles:
+   - users
+   - php
+
+
+#[local]
+#localhost
+
+#[test1]
+#62.84.113.78
+
+#[test2]
+#84.252.129.232

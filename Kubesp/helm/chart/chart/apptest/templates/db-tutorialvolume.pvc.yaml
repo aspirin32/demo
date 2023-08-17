@@ -1,0 +1,20 @@
+{{ if .Values.db.persistence.tutorialvolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: '{{ .Release.Name }}-tutorialvolume'
+  labels:
+    katenary.io/component: db
+    katenary.io/project: '{{ .Chart.Name }}'
+    katenary.io/pvc-name: tutorialvolume
+    katenary.io/release: '{{ .Release.Name }}'
+  annotations:
+    katenary.io/docker-compose-sha1: 495b7d6d7be2e96df4b3ae0833de4f381dea6226
+    katenary.io/version: 2.0.0-beta2
+spec:
+  resources:
+    requests:
+      storage: '{{ .Values.db.persistence.tutorialvolume.capacity }}'
+  accessModes:
+    - ReadWriteOnce
+{{- end -}}

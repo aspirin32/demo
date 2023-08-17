@@ -1,0 +1,13 @@
+[app]
+51.250.92.223
+51.250.94.209
+
+[database]
+51.250.12.223
+
+[web]
+51.250.12.223
+
+[database:vars]
+psql_version=12
+data_dir=/opt/psql/data

@@ -1,0 +1,11 @@
+tolerations:
+- key: "key1"
+  operator: "Equal" #Equal дополнительно сравнивает значение values, которое было задано в taint и требует чёткого соответствия. 
+  value: "value1"
+  effect: "NoSchedule"
+---
+
+tolerations:
+- key: "key1"
+  operator: "Exists" #Оператор Exists проверяет, присутствует ли ключ с нужным эффектом, значение игнорируется
+  effect: "NoSchedule"

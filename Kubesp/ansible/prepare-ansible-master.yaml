@@ -1,0 +1,83 @@
+---
+- hosts: ansible # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  remote_user: ubuntu
+  tasks:
+  - name: install-ansible-core # httpd installation
+    apt:
+      name: ansible-core
+      state: present
+      update_cache: yes
+  - name: install-python3-pip # httpd installation
+    apt:
+      name: python3-pip
+      state: present
+      update_cache: yes
+  - name: make-directory-kubespray
+    become: yes
+    file:
+      path: /home/ubuntu/kubespray
+      state: directory
+      owner: ubuntu
+      group: ubuntu
+      mode: u=rwx,g=rwx,o=x
+  - name: Copy-ssh
+    ansible.builtin.copy:
+      src: /home/allexxx1991/.ssh/id_rsa
+      dest: /home/ubuntu/.ssh/id_rsa
+      owner: ubuntu
+      group: ubuntu
+      mode: u=rw,g-rwx,o-rwx
+  - name: Clone-a-repo-kubespray
+    ansible.builtin.git:
+      repo: https://github.com/kubernetes-sigs/kubespray.git
+      dest: /home/ubuntu/kubespray
+  - name: chown ubuntu on directory
+    shell: chown -R ubuntu:ubuntu /home/ubuntu/kubespray/
+  - name: Install-kubespray-requirements
+    ansible.builtin.pip:
+      requirements: /home/ubuntu/kubespray/requirements.txt
+- hosts: k8s-master # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  remote_user: ubuntu
+  tasks:
+  - name: add repo gitlab-runner # collect docker version to output
+    shell: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
+  - name: install-gitlabrunner # httpd installation
+    apt:
+      name: gitlab-runner
+      state: present
+      update_cache: yes
+  - name: add group and validate the sudoers file before saving
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      insertafter: '^# Members of the admin group may gain root privileges$'
+      line: '%gitlab-runner ALL=(ALL) NOPASSWD: ALL'
+      validate: /usr/sbin/visudo -cf %s
+- hosts: srv # group of hosts
+  gather_facts: yes # we need to gather facts
+  become: true
+  remote_user: ubuntu
+  tasks:
+  - name: install-docker # httpd installation
+    apt:
+      name: docker.io
+      state: present
+      update_cache: yes
+  - name: add repo gitlab-runner # collect docker version to output
+    shell: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
+  - name: install-gitlabrunner # httpd installation
+    apt:
+      name: gitlab-runner
+      state: present
+      update_cache: yes
+  - name: add group and validate the sudoers file before saving
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      insertafter: '^# Members of the admin group may gain root privileges$'
+      line: '%gitlab-runner ALL=(ALL) NOPASSWD: ALL'
+      validate: /usr/sbin/visudo -cf %s

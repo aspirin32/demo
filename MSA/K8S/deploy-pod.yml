@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deploy
+  labels:
+    app: myapp
+spec:
+  selector:
+    matchLabels: #этот элемент устанавливает связь между Deployment и управляемыми Pod’ами.
+#Конкретно в этом примере Deployment будет управлять только теми подами, у которых есть метка app, равная myapp-pod.
+      app: myapp-pod
+  replicas: 2 # запускает 2 пода, созданных по шаблону
+  template: #блок template содержит информацию о создаваемых Deployment’ом Pod’ах. Внутри него описание, которые мы почти полностью перенесли из предыдущего раздела.
+    metadata:
+      labels:
+        app: myapp-pod
+    spec:
+      containers:
+      - name: myapp-container
+        image: busybox
+        ports:
+          — containerPort: 80 #в описании контейнера добавили информацию о том, что обе наших реплики будут слушать подключения на порту 80.
+        command: ['sh', '-c', 'echo Hello Kubernetes from the Deployment! && sleep 3600']

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: busybox
+      command: [ "/bin/sh", "-c", "ls /etc/config/" ]
+      volumeMounts: # уже внутри описания контейнера говорим, куда монтировать хранилище
+      - name: config-volume #собственно имя объявленного хранилища на уровне Pod’а;
+        mountPath: /etc/config # куда монтировать в контейнере данные.
+  volumes:
+    - name: config-volume #указываем имя объекта, с которым будем работать;
+      configMap: #указываем тип источника данных;
+        name: game-demo #и собственно имя configMap.

@@ -1,0 +1,13 @@
+---
+- hosts: local # group of hosts
+  gather_facts: yes # we need to gather facts
+  tasks: 
+  - name: install_docker # docker installation
+    become: yes
+    apt:
+      name: docker.io
+      state: present
+  - name: version_of_docker # collect docker version to output
+    shell: docker -v
+    register: output
+  - debug: var=output.stdout # to see that we have docker

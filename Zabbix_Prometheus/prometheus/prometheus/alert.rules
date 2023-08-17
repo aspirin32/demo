@@ -1,0 +1,43 @@
+groups: 
+- name: example
+  rules:
+  - alert: PrometheusTargetMissing
+    expr: up == 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Prometheus target missing (instance {{ $labels.instance }})"
+      description: "A Prometheus target has disappeared. An exporter might be crashed. VALUE = {{ $value }}  LABELS: {{ $labels }}"
+  - alert: high_load
+    expr: node_load1 > 0.8
+    for: 30s
+    labels:
+      severity: warning
+    annotations:
+      summary: "Instance {{ $labels.instance }} under high load"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."
+  - alert: status_code
+    expr: probe_http_status_code{instance="https://skillfactory.ru", job="blackbox"} != 200
+    for: 5s
+    labels:
+      severity: critical
+    annotations:
+      summary: "status code changed"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} status code not 200."
+  - alert: latency
+    expr: probe_http_duration_seconds{instance="https://skillfactory.ru", job="blackbox", phase="connect"} > 5s
+    for: 5s
+    labels:
+      severity: warning
+    annotations:
+      summary: "connection to site is too long"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} connection to site is too long"
+  - alert: server reboot
+    expr: node_time_seconds{instance="node-exporter:9100",job="node"} - node_boot_time_seconds{instance="node-exporter:9100",job="node"} < 5s
+    for: 5s
+    labels:
+      severity: critical
+    annotations:
+      summary: "server just rebooted"
+      description: "server rebooted."

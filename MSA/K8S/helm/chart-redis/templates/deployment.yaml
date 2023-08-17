@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: {{ .Release.Name }}-deployment
+
+  labels:
+
+    app: {{ .Release.Name }}
+
+    component: {{ .Release.Namespace }}
+
+    release: {{ .Release.Name }}
+
+spec:
+
+  replicas: {{ .Values.redis.replicas }}
+
+  selector:
+
+    matchLabels:
+
+      app: {{ .Release.Name }}
+
+      component: {{ .Release.Namespace }}
+
+      release: {{ .Release.Name }}
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: {{ .Release.Name }}
+
+        component: {{ .Release.Namespace }}
+
+        release: {{ .Release.Name }}
+
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+  {{- if $.Values.limits }}
+
+        resources:
+
+          limits:
+
+            memory: {{ $.Values.limits.memory }}
+
+            cpu: {{ $.Values.limits.cpu }}
+
+  {{- end }}

@@ -1,0 +1,35 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: true
+  tasks:
+  - name: install java
+    apt:
+      name: openjdk-11-jre-headless
+      state: present
+      update_cache: yes
+  - name: install_docker
+    apt:
+      name: docker.io
+      state: present
+      update_cache: yes
+  - name: Set authorized key for user allexxx1991 copying it from current user
+    ansible.posix.authorized_key:
+      user: allexxx1991
+      state: present
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+  - name: create dir for jenkins agents 
+    file:
+      path: /var/jenkins
+      state: directory
+      mode: 0777 # not required. The permissions the resulting file or directory should have. For those used to I(/usr/bin/chmod) remember that modes are actually octal numbers. You must either add a leading zero so that Ansible's YAML parser knows it is an octal number (like C(0644) or C(01777)) or quote it (like C('644') or C('1777')) so Ansible receives a string and can do its own conversion from string into number. Giving Ansible a number without following one of these rules will end up with a decimal number which will have unexpected results. As of Ansible 1.8, the mode may be specified as a symbolic mode (for example, C(u+rwx) or C(u=rw,g=r,o=r)). As of Ansible 2.6, the mode may also be the special string C(preserve). When set to C(preserve) the file will be given the same permissions as the source file.
+  - name: Ensure group "docker" exists
+    ansible.builtin.group:
+      name: docker
+      state: present
+  - name: jenkins to group docker
+    shell:
+      cmd: usermod -aG docker jenkins
+  - name: activate group docker
+    shell:
+      cmd: chmod 777 /var/run/docker.sock

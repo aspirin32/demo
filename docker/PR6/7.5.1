@@ -1,0 +1,4 @@
+sudo docker run  -d -p 9090:80 -p 9999:8080 --mount type=volume,dst=/var/log/nginx nginx
+
+
+sudo docker run --mount type=volume,dst=/opt/testimage --env site=https://habr.com

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: busybox
+      command: [ "/bin/sh", "-c", "ls /etc/config/" ]
+      volumeMounts: #в этом блоке мы добавляем свойство subPath для каждого элемента, который хотим смонтировать
+      - name: config-volume-properties
+        mountPath: /etc/config/game-properties.conf1 #путь, где будет размещаться файл из нашего configMap;
+        subPath: game.properties #ключ свойства, которое хотим взять для монтирования.
+      - name: config-volume-lives
+        mountPath: /etc/config/player-initial-lives.conf2
+        subPath: player_initial_lives
+  volumes: #в этом блоке мы говорим, что берем двух configMap
+    - name: config-volume-properties
+      configMap:
+        name: game-demo
+    - name: config-volume-lives
+      configMap:
+        name: game-demo

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-container
+      image: busybox
+      command: [ "/bin/sh", "-c", "env" ]
+      envFrom: #envFrom вместо env — указываем, откуда будем получать значения окружений
+      - configMapRef: #configMapRef вместо configMapKeyRef — указываем, что значения будем получать из configMap, причем полностью без указания явных ключей
+          name: game-demo #имя configMap.
